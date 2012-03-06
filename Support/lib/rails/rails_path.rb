@@ -203,12 +203,12 @@ class RailsPath
         [Inflector.pluralize(controller_name), Inflector.singularize(controller_name)].
          map { |name| name + '_controller' }
       end
-    when :helper     then controller_name + '_helper'
+    when :helper       then controller_name + '_helper'
     when :functional_test then controller_name + '_controller_test'
-    when :unit_test  then Inflector.singularize(controller_name) + '_test'
-    when :model      then Inflector.singularize(controller_name)
-    when :fixture    then Inflector.pluralize(controller_name)
+    when :unit_test    then Inflector.singularize(controller_name) + '_test'
+    when :model        then Inflector.singularize(controller_name)
     when :search_model then Inflector.singularize(controller_name)
+    when :fixture      then Inflector.pluralize(controller_name)
     else controller_name
     end
   end
@@ -223,17 +223,17 @@ class RailsPath
     end
     controller_names
   end
-  
+
   def default_extension_for(type, view_format = nil)
     case type
     when :javascript then ENV['RAILS_JS_EXT'] || '.js'
     when :stylesheet then ENV['RAILS_CSS_EXT'] || (wants_haml ? '.sass' : '.css')
-    when :view       then                    
+    when :view       then
       view_format = :html if view_format.nil?
       case view_format.to_sym
       when :xml, :rss, :atom then ".#{view_format}.builder"
       when :js  then '.js.rjs'
-      else 
+      else
         rails_view_ext = ENV['RAILS_VIEW_EXT'] || (wants_haml ? 'haml' : 'erb')
         ".#{view_format}.#{rails_view_ext}"
       end
@@ -242,7 +242,7 @@ class RailsPath
     end
   end
 
-  def rails_path_for(type)    
+  def rails_path_for(type)
     return nil if file_type.nil?
     return rails_path_for_view if type == :view
     if TextMate.project_directory
