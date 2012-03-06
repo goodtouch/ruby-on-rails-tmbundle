@@ -16,7 +16,8 @@ module AssociationMessages
     :controller => [:functional_test, :helper, :model, :javascript, :stylesheet, :fixture],
     :helper => [:controller, :model, :unit_test, :functional_test, :javascript, :stylesheet, :fixture],
     :view => [:controller, :javascript, :stylesheet, :helper, :model],
-    :model => [:unit_test, :functional_test, :controller, :helper, :fixture],
+    :model => [:search_model, :controller, :helper],
+    :search_model => [:model, :controller, :helper],
     :fixture => [:unit_test, :functional_test, :controller, :helper, :model],
     :functional_test => [:controller, :helper, :model, :unit_test, :fixture],
     :unit_test => [:model, :controller, :helper, :functional_test, :fixture],
@@ -150,6 +151,7 @@ class RailsPath
       when %r{/controllers/(application\.(rb))$}        then :controller
       when %r{/helpers/(.+_helper\.rb)$}                then :helper
       when %r{/views/(.+\.(#{VIEW_EXTENSIONS * '|'}))$} then :view
+      when %r{/models/search/(.+\.(rb))$}               then :search_model
       when %r{/models/(.+\.(rb))$}                      then :model
       when %r{/.+/fixtures/(.+\.(yml|csv))$}            then :fixture
       when %r{/test/functional/(.+\.(rb))$}             then :functional_test
@@ -183,8 +185,8 @@ class RailsPath
     file_type == :view and basename !~ /^_/
   end
 
-  def modules 
-    return nil if tail.nil? 
+  def modules
+    return nil if tail.nil?
     if file_type == :view
       tail.split('/').slice(0...-2)
     else
@@ -206,6 +208,7 @@ class RailsPath
     when :unit_test  then Inflector.singularize(controller_name) + '_test'
     when :model      then Inflector.singularize(controller_name)
     when :fixture    then Inflector.pluralize(controller_name)
+    when :search_model then Inflector.singularize(controller_name)
     else controller_name
     end
   end
@@ -298,6 +301,7 @@ class RailsPath
   def stubs
     { :controller => 'app/controllers',
       :model => 'app/models',
+      :search_model => 'app/models/search',
       :helper => 'app/helpers/',
       :view => 'app/views/',
       :config => 'config',
